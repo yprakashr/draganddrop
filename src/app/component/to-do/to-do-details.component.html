@@ -1,0 +1,40 @@
+<div class="row" style="--bs-gutter-x:0;">
+  <div class="col-md-12">
+    <div class="container">
+      <div class="row" cdkDropListGroup>
+
+        <div class="col-md-3" *ngFor="let column of toDoBoard1.columns">
+
+          <mat-card class="todo-card bg-light">
+            <mat-card-header>{{column.name}}</mat-card-header>
+            <!-- <mat-card-header  *ngIf="column.name === 'BACKLOG'">AGE 1-18</mat-card-header>
+            <mat-card-header  *ngIf="column.name === 'TODO'">AGE 19-25</mat-card-header>
+            <mat-card-header  *ngIf="column.name === 'IN PROGRESS'">AGE 26-45</mat-card-header>
+            <mat-card-header  *ngIf="column.name === 'DONE'">AGE 46-85</mat-card-header> -->
+
+            <div cdkDropList [cdkDropListData]="column.task" class="container example-list"
+              (cdkDropListDropped)="drop($event)">
+              <div class="example-box" *ngFor="let item of column.task" cdkDrag>
+                <mat-card class="mt-2 mb-2">
+                  <mat-card-header [hidden]="true" style="font-weight:500;">{{item.id}}</mat-card-header>
+                  <mat-card-header style="font-weight:500;">{{item.name}}</mat-card-header>
+                  <mat-card-content style="font-weight:300;">{{item.email}}</mat-card-content>
+                  <mat-card-content style="font-weight:300;">{{item.phone}}</mat-card-content>
+                  <mat-card-content style="font-weight:300;">{{item.age}}</mat-card-content>
+                  <div class="btns" style="display:flex">
+                    <button mat-icon-button color="primary" aria-label="Edit" (click)="editTask(item)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteTask(item)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
