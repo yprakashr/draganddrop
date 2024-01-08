@@ -1,7 +1,7 @@
 <div  class="row" style="--bs-gutter-x:0;">
   <div class="col-md-12">
     <div class="container">
-      <mat-card  *ngIf="showForm">
+      <mat-card *ngIf="showForm">
         <mat-card-header>
           <mat-card-title class="card-heading">On Add</mat-card-title>
         </mat-card-header>
@@ -65,87 +65,15 @@
                 <button mat-raised-button (click)="onCancel()" color="accent" style="margin-right:2rem"
                   >Cancel</button>
                 <button mat-raised-button (click)="onUpdate(form)" color="primary" style="margin-right:2rem"
-                  *ngIf="btnTitle != 'Submit'">Update</button>
+                  *ngIf="showForm=='false'">Update</button>
                 <button mat-raised-button (click)="addNewTask(form)" color="primary" type="submit"
-                  *ngIf="btnTitle == 'Submit'">{{btnTitle}}</button>
+                  *ngIf="showForm=='true'">Submit</button>
               </div>
             </form>
           </div>
         </mat-card-content>
       </mat-card>
-      <mat-card *ngIf="btnTitle != 'Submit'">
-        <mat-card-header>
-          <mat-card-title class="card-heading">On Edit</mat-card-title>
-          <!-- <mat-card-title *ngIf="btnTitle == 'Submit'" class="card-heading">On Add</mat-card-title> -->
-        </mat-card-header>
-        <mat-card-content>
-          <div class="row" style="--bs-gutter-x:0;">
-            <form [formGroup]="form">
-              <div class="row">
-                <div class="col">
-                  <label for="title"><b>Name</b></label>
-                  <input type="text" name="id" id="id" class="form-control" formControlName="id" ngDefaultControl
-                    hidden>
-                  <input type="text" placeholder="Enter title" name="title" id="title" class="form-control"
-                    formControlName="name" required ngDefaultControl>
-
-                    <app-field-error
-                    [displayError]="isFieldValid('name')"
-                    [errorMsg]="getErrorMessage('name')">
-                  </app-field-error>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="col">
-                    <label for="description"><b>Email</b></label>
-                    <input placeholder="Enter Email" name="email" id="description" rows="2" cols="50"
-                      formControlName="email" ngDefaultControl>
-                      <app-field-error
-                    [displayError]="isFieldValid('email')"
-                    [errorMsg]="getErrorMessage('email')">
-                  </app-field-error>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="col">
-                    <label for="description"><b>Phone</b></label>
-                    <input placeholder="Enter Phone" name="description" id="description" rows="2" cols="50"
-                      formControlName="phone" ngDefaultControl>
-                      <app-field-error
-                    [displayError]="isFieldValid('phone')"
-                    [errorMsg]="getErrorMessage('phone')">
-                  </app-field-error>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <div class="col">
-                    <label for="description"><b>Age</b></label>
-                    <input type="number" placeholder="Enter Age"  name="description" id="description" rows="2" cols="50"
-                      formControlName="age" ngDefaultControl>
-                      <app-field-error
-                    [displayError]="isFieldValid('age')"
-                    [errorMsg]="getErrorMessage('age')">
-                  </app-field-error>
-                  </div>
-                </div>
-              </div>
-              <div mat-dialog-actions align="end">
-                <button mat-raised-button (click)="onCancel()" color="accent" style="margin-right:2rem"
-                  *ngIf="btnTitle != 'Submit'">Cancel</button>
-                <button mat-raised-button (click)="onUpdate(form)" color="primary" style="margin-right:2rem"
-                  *ngIf="btnTitle != 'Submit'">Update</button>
-                <button mat-raised-button (click)="addNewTask(form)" color="primary" type="submit"
-                  *ngIf="btnTitle == 'Submit'">{{btnTitle}}</button>
-              </div>
-            </form>
-          </div>
-        </mat-card-content>
-      </mat-card>
+     
     </div>
   </div>
 </div>

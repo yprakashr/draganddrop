@@ -5,12 +5,12 @@ import { Subject, Observable, BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class ButtonService {
-  private formVisibleSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  formVisible$: Observable<boolean> = this.formVisibleSubject.asObservable();
+  private formVisibleSubject: BehaviorSubject<string> = new BehaviorSubject<string>("false");
+  formVisible$: Observable<string> = this.formVisibleSubject.asObservable();
 
   constructor() { }
 
-  setFormVisibility(visibility: boolean) {
+  setFormVisibility(visibility: string) {
     
     this.formVisibleSubject.next(visibility);
   }

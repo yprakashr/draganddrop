@@ -33,8 +33,7 @@ export class DashboardComponent implements OnInit {
 
 
   toggleForm() {
-   
-    this.buttonService.setFormVisibility(true);
+    this.buttonService.setFormVisibility("true");
   }
  
 

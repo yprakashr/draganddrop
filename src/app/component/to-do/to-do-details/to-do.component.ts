@@ -25,7 +25,7 @@ export class ToDoComponent implements OnInit, OnChanges {
   @Output() onTaskUpdate = new EventEmitter<any>();
   @Output() onTaskCancel = new EventEmitter<any>();
   @Input() formValues!: Task;
-  showForm: boolean = false;
+  showForm: string = '';
   btnTitle: string = '';
   validForm: boolean = true;
   formSubmitAttempt = false;
@@ -79,6 +79,7 @@ export class ToDoComponent implements OnInit, OnChanges {
     this.formVisibilityService.formVisible$.subscribe((visibility) => {
       this.showForm = visibility;
     });
+    this.showForm = '';
     this.form = this.fb.group({
       id: [],
       name: [
@@ -126,9 +127,6 @@ export class ToDoComponent implements OnInit, OnChanges {
     this.initialiZeForm(this.formValues);
   }
 
-  toggleForm() {
-    this.formVisibilityService.setFormVisibility(this.showForm);
-  }
 
   public initialiZeForm(task: any) {
     if (!task || (task.name == '' && task != 'hello')) {
@@ -171,7 +169,7 @@ export class ToDoComponent implements OnInit, OnChanges {
   }
 
   public onCancel() {
-    this.formVisibilityService.setFormVisibility(false);
+    this.formVisibilityService.setFormVisibility("");
     this.btnTitle = 'Submit';
     this.form.reset();
     this.onTaskCancel.emit();

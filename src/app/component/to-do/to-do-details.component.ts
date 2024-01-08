@@ -19,6 +19,7 @@ import { Task } from './models/task.mode';
 import { Dialog, DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { PopUpComponent } from '../pop-up/pop-up.component';
 import IdUtils from 'src/app/utils/id.util';
+import { ButtonService } from 'src/app/button.service';
 
 @Component({
   selector: 'app-to-do-details',
@@ -37,14 +38,19 @@ export class ToDoDetailsComponent implements OnChanges {
   // Initialize variables
   searchQuery: string = '';
   filteredTasks: Task[] = [];
+  originalToDoBoardData: any; // Replace 'any' with the appropriate type
 
-  // Function triggered on search input change
+  initializeToDoBoard() {
+    this.originalToDoBoardData = this.toDoBoard1;
+    // this.toDoBoard1 = /* Your original data */;
+  }
   onSearchChange() {
     const query = this.searchQuery.toLowerCase().trim();
 
     if (!query) {
-      return; // No need to filter if the search query is empty
-    }
+      this.toDoBoard1 = { ...this.originalToDoBoardData };
+      return;
+        }
 
     this.toDoBoard1.columns.forEach((column) => {
       column.task = column.task.filter(
@@ -53,13 +59,14 @@ export class ToDoDetailsComponent implements OnChanges {
           task.age.toString().includes(query) // Convert age to string for search
       );
     });
+  
   }
 
   sortTasksByName(column: Column) {
     column.task.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  constructor(public snackBar: MatSnackBar, public dialog: Dialog) {}
+  constructor(public snackBar: MatSnackBar, public dialog: Dialog, private buttonService: ButtonService) {}
 
   ngOnInit() {
     this.getTaskList();
@@ -211,6 +218,7 @@ export class ToDoDetailsComponent implements OnChanges {
 
   editTask(task: Task) {
     this.onTaskEdit.emit(task);
+    this.buttonService.setFormVisibility("false");
   }
 
   deleteTask(item: any) {
