@@ -1,18 +1,22 @@
 <div class="row" style="--bs-gutter-x:0;">
   <div class="col-md-12">
-    <mat-toolbar color="primary"   class="d-flex justify-content-between">
+    <mat-toolbar color="primary" class="d-flex justify-content-between">
       <!-- <div  class="d-flex justify-content-between"> -->
       <span>To Do App</span>
-      <button (click)="form=!form" class="btn btn-danger">Add</button>
-    </mat-toolbar>
-    </div>
 
-  <div *ngIf="form" class="col-md-12 mt-5">
-    <app-to-do [formValues]="formValues" (onTaskAdd)="addTasks($event)" (onTaskUpdate)="updateTask($event)" (onTaskCancel)="cancelTask($event)"></app-to-do>
+      <button (click)="toggleForm()" class="btn btn-danger mx-2">Add</button>
+      
+    </mat-toolbar>
   </div>
 
   <div class="col-md-12 mt-5">
-    <app-to-do-details [newTask]="newTask" [updatedTask]="updatedTask" (onTaskEdit)="editTask($event)"></app-to-do-details>
+    <app-to-do [formValues]="formValues" (onTaskAdd)="addTasks($event)" (onTaskUpdate)="updateTask($event)"
+      (onTaskCancel)="cancelTask($event)"></app-to-do>
+  </div>
+
+  <div class="col-md-12 mt-5">
+    <app-to-do-details [newTask]="newTask" [updatedTask]="updatedTask"
+      (onTaskEdit)="editTask($event)"></app-to-do-details>
   </div>
 
 </div>

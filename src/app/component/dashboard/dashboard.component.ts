@@ -30,18 +30,20 @@ export class DashboardComponent implements OnInit {
     this.updatedTask = null;
     this.newTask = $event as Task;
   }
-  handleClick() {
-    // Emitting a button click event through the service
-    this.buttonService.sendButtonClick();
+
+
+  toggleForm() {
+   
+    this.buttonService.setFormVisibility(true);
   }
- // Function to edit a task
-public editTask(task: any) {
-  this.form = true;
-  this.newTask = null;
-  this.updatedTask = null;
-  this.formValues = { ...task }; 
-  console.log(this.form&&this.formValues)
-}
+ 
+
+  // Function to edit a task
+  public editTask(task: any) {
+    this.newTask = null;
+    this.updatedTask = null;
+    this.formValues =task ;
+  }
 
   public updateTask($event: any) {
     this.formValues = null;

@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ButtonService {
-  private buttonClickSubject = new Subject<void>();
+  private formVisibleSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  formVisible$: Observable<boolean> = this.formVisibleSubject.asObservable();
 
-  sendButtonClick(): void {
-    this.buttonClickSubject.next();
-  }
+  constructor() { }
 
-  getButtonClick(): Observable<void> {
-    return this.buttonClickSubject.asObservable();
+  setFormVisibility(visibility: boolean) {
+    
+    this.formVisibleSubject.next(visibility);
   }
 }

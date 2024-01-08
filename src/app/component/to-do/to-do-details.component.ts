@@ -41,29 +41,29 @@ export class ToDoDetailsComponent implements OnChanges {
   // Function triggered on search input change
   onSearchChange() {
     const query = this.searchQuery.toLowerCase().trim();
-  
+
     if (!query) {
       return; // No need to filter if the search query is empty
     }
-  
-    this.toDoBoard1.columns.forEach(column => {
-      column.task = column.task.filter(task =>
-        task.name.toLowerCase().includes(query) ||
-        task.age.toString().includes(query) // Convert age to string for search
+
+    this.toDoBoard1.columns.forEach((column) => {
+      column.task = column.task.filter(
+        (task) =>
+          task.name.toLowerCase().includes(query) ||
+          task.age.toString().includes(query) // Convert age to string for search
       );
     });
   }
 
-sortTasksByName(column: Column) {
-  column.task.sort((a, b) => a.name.localeCompare(b.name));
-}
+  sortTasksByName(column: Column) {
+    column.task.sort((a, b) => a.name.localeCompare(b.name));
+  }
 
   constructor(public snackBar: MatSnackBar, public dialog: Dialog) {}
 
   ngOnInit() {
     this.getTaskList();
   }
-
 
   ngOnChanges(changes: SimpleChanges) {
     this.updateTask(this.updatedTask);
@@ -78,10 +78,7 @@ sortTasksByName(column: Column) {
     new Column('Age 45-80', []),
   ]);
 
-
-
-
-  drop(event: CdkDragDrop<Task[]>,columnName:string) {
+  drop(event: CdkDragDrop<Task[]>, columnName: string) {
     this.targetColumnName = columnName;
     console.log(this.targetColumnName);
     if (event.previousContainer === event.container) {
@@ -93,18 +90,20 @@ sortTasksByName(column: Column) {
     } else {
       const taskToMove = event.previousContainer.data[event.previousIndex];
       taskToMove.age = this.getAgeFromColumnName(this.targetColumnName);
-  
+
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-  
-      localStorage.setItem('toDoBoardData', JSON.stringify(this.toDoBoard1.columns));
+
+      localStorage.setItem(
+        'toDoBoardData',
+        JSON.stringify(this.toDoBoard1.columns)
+      );
     }
   }
-
 
   getAgeFromColumnName(columnName: string): number {
     switch (columnName) {
@@ -120,8 +119,6 @@ sortTasksByName(column: Column) {
         return 0; // Default value if the column name doesn't match
     }
   }
-
-  
 
   autoDeleteTask() {
     this.openSnackBar();
@@ -145,45 +142,67 @@ sortTasksByName(column: Column) {
     if (!taskList) return;
     this.toDoBoard1.columns = JSON.parse(taskList);
   }
-// Function to sort tasks in a column by task name
+  // Function to sort tasks in a column by task name
 
+  addTask(task: Task) {
+    if (!task) return;
 
+    task.id = IdUtils.getUUID(); // Assigning a unique ID to the task
 
- addTask(task: Task) {
-  if (!task) return;
+    const age = task.age; // Assuming task has an 'age' property
 
-  task.id = IdUtils.getUUID(); // Assigning a unique ID to the task
+    if (age >= 1 && age <= 18) {
+      this.toDoBoard1.columns[0].task.push(task); // Add task to the first column for Age 1-18
+    } else if (age >= 19 && age <= 25) {
+      this.toDoBoard1.columns[1].task.push(task); // Add task to the second column for Age 19-25
+    } else if (age >= 26 && age <= 45) {
+      this.toDoBoard1.columns[2].task.push(task); // Add task to the third column for Age 26-45
+    } else if (age >= 46 && age <= 80) {
+      this.toDoBoard1.columns[3].task.push(task); // Add task to the fourth column for Age 46-80
+    }
 
-  const age = task.age; // Assuming task has an 'age' property
-
-  if (age >= 1 && age <= 18) {
-    this.toDoBoard1.columns[0].task.push(task); // Add task to the first column for Age 1-18
-  } else if (age >= 19 && age <= 25) {
-    this.toDoBoard1.columns[1].task.push(task); // Add task to the second column for Age 19-25
-  } else if (age >= 26 && age <= 45) {
-    this.toDoBoard1.columns[2].task.push(task); // Add task to the third column for Age 26-45
-  } else if (age >= 46 && age <= 80) {
-    this.toDoBoard1.columns[3].task.push(task); // Add task to the fourth column for Age 46-80
+    // Update the storage or perform other necessary operations
+    localStorage.setItem(
+      'toDoBoardData',
+      JSON.stringify(this.toDoBoard1.columns)
+    );
   }
-
-  // Update the storage or perform other necessary operations
-  localStorage.setItem('toDoBoardData', JSON.stringify(this.toDoBoard1.columns));
-}
-
   updateTask(updatedTask: Task) {
     if (!updatedTask) return;
+
+    // Loop through columns and tasks to find and update the task
     this.toDoBoard1.columns.forEach((col) => {
       col.task.forEach((task) => {
-        if (task.id == updatedTask.id) {
+        if (task.id === updatedTask.id) {
           task.name = updatedTask.name;
           task.email = updatedTask.email;
           task.phone = updatedTask.phone;
           task.age = updatedTask.age;
-          return;
         }
       });
     });
-    
+
+    const age = updatedTask.age;
+
+    // Remove the task from any column it's already in
+    this.toDoBoard1.columns.forEach((col) => {
+      col.task = col.task.filter((task) => task.id !== updatedTask.id);
+    });
+
+    // Add the updated task to the appropriate column based on age
+    if (age >= 1 && age <= 18) {
+      this.toDoBoard1.columns[0].task.push(updatedTask);
+    } else if (age >= 19 && age <= 25) {
+      this.toDoBoard1.columns[1].task.push(updatedTask);
+    } else if (age >= 26 && age <= 45) {
+      this.toDoBoard1.columns[2].task.push(updatedTask);
+    } else if (age >= 46 && age <= 80) {
+      this.toDoBoard1.columns[3].task.push(updatedTask);
+    } else {
+      // Handle tasks that don't fit into any defined age range
+      // For example, you might choose to ignore or handle them differently
+      console.log("Task doesn't fit into any age range");
+    }
     localStorage.setItem(
       'toDoBoardData',
       JSON.stringify(this.toDoBoard1.columns)
@@ -192,7 +211,6 @@ sortTasksByName(column: Column) {
 
   editTask(task: Task) {
     this.onTaskEdit.emit(task);
-    // this.customEvent.emit('true');
   }
 
   deleteTask(item: any) {

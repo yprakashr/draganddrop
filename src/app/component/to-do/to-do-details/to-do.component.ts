@@ -13,6 +13,7 @@ import {
   FormControl,
 } from '@angular/forms';
 import { Task } from '../models/task.mode';
+import { ButtonService } from 'src/app/button.service';
 
 @Component({
   selector: 'app-to-do',
@@ -24,8 +25,8 @@ export class ToDoComponent implements OnInit, OnChanges {
   @Output() onTaskUpdate = new EventEmitter<any>();
   @Output() onTaskCancel = new EventEmitter<any>();
   @Input() formValues!: Task;
-
-  btnTitle: string = 'Submit';
+  showForm: boolean = false;
+  btnTitle: string = '';
   validForm: boolean = true;
   formSubmitAttempt = false;
 
@@ -69,9 +70,15 @@ export class ToDoComponent implements OnInit, OnChanges {
     ],
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private formVisibilityService: ButtonService
+  ) {}
 
   ngOnInit(): void {
+    this.formVisibilityService.formVisible$.subscribe((visibility) => {
+      this.showForm = visibility;
+    });
     this.form = this.fb.group({
       id: [],
       name: [
@@ -119,11 +126,16 @@ export class ToDoComponent implements OnInit, OnChanges {
     this.initialiZeForm(this.formValues);
   }
 
-  public initialiZeForm(task: Task) {
-    if (!task || task.name == '') {
+  toggleForm() {
+    this.formVisibilityService.setFormVisibility(this.showForm);
+  }
+
+  public initialiZeForm(task: any) {
+    if (!task || (task.name == '' && task != 'hello')) {
       this.btnTitle = 'Submit';
       return;
     }
+
     this.btnTitle = 'Update';
     this.form.patchValue({
       id: task.id,
@@ -132,7 +144,6 @@ export class ToDoComponent implements OnInit, OnChanges {
       phone: task.phone,
       age: task.age,
     });
-   
   }
 
   public addNewTask(form: any) {
@@ -160,6 +171,7 @@ export class ToDoComponent implements OnInit, OnChanges {
   }
 
   public onCancel() {
+    this.formVisibilityService.setFormVisibility(false);
     this.btnTitle = 'Submit';
     this.form.reset();
     this.onTaskCancel.emit();
