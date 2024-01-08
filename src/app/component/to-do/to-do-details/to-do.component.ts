@@ -127,13 +127,11 @@ export class ToDoComponent implements OnInit, OnChanges {
     this.initialiZeForm(this.formValues);
   }
 
-
   public initialiZeForm(task: any) {
     if (!task || (task.name == '' && task != 'hello')) {
       this.btnTitle = 'Submit';
       return;
     }
-
     this.btnTitle = 'Update';
     this.form.patchValue({
       id: task.id,
