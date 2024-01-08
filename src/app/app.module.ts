@@ -19,6 +19,11 @@ import { ToDoDetailsComponent } from './component/to-do/to-do-details.component'
 import { PopUpComponent } from './component/pop-up/pop-up.component';
 import {DialogModule} from '@angular/cdk/dialog';
 import { FieldErrorComponent } from './component/field-error/field-error.component';
+import { ToastrModule } from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
+
+import { provideToastr } from 'ngx-toastr';
+
 
 @NgModule({
   declarations: [
@@ -43,9 +48,13 @@ import { FieldErrorComponent } from './component/field-error/field-error.compone
     ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
-    DialogModule
+    DialogModule,
+    ToastrModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    provideAnimations(), // required animations providers
+    provideToastr(),
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -34,6 +34,29 @@ export class ToDoDetailsComponent implements OnChanges {
   targetColumnName!: string;
   form: boolean = true;
   columnMap: any;
+  // Initialize variables
+  searchQuery: string = '';
+  filteredTasks: Task[] = [];
+
+  // Function triggered on search input change
+  onSearchChange() {
+    const query = this.searchQuery.toLowerCase().trim();
+  
+    if (!query) {
+      return; // No need to filter if the search query is empty
+    }
+  
+    this.toDoBoard1.columns.forEach(column => {
+      column.task = column.task.filter(task =>
+        task.name.toLowerCase().includes(query) ||
+        task.age.toString().includes(query) // Convert age to string for search
+      );
+    });
+  }
+
+sortTasksByName(column: Column) {
+  column.task.sort((a, b) => a.name.localeCompare(b.name));
+}
 
   constructor(public snackBar: MatSnackBar, public dialog: Dialog) {}
 
@@ -41,14 +64,7 @@ export class ToDoDetailsComponent implements OnChanges {
     this.getTaskList();
   }
 
-  column1 = [
-    {
-      name: 'AGE 1-18',
-      name2: 'AGE 19-25',
-      name3: 'AGE 25-45',
-      name4: 'AGE 45-80',
-    },
-  ];
+
   ngOnChanges(changes: SimpleChanges) {
     this.updateTask(this.updatedTask);
     this.addTask(this.newTask);
@@ -62,51 +78,11 @@ export class ToDoDetailsComponent implements OnChanges {
     new Column('Age 45-80', []),
   ]);
 
-  // drop(event: CdkDragDrop<Task[]>) {
-  //   // console.log(event)
-  //   if (event.previousContainer === event.container) {
-  //     moveItemInArray(
-  //       event.container.data,
-  //       event.previousIndex,
-  //       event.currentIndex
-  //     );
 
-  //   } else {
-  //     transferArrayItem(
-  //       event.previousContainer.data,
-  //       event.container.data,
-  //       event.previousIndex,
-  //       event.currentIndex
-  //     );
-  //     if (event.container.id === 'cdk-drop-list-3') {
-  //       this.autoDeleteTask();
-  //     }
-  //   }
-  //   console.log(event.previousContainer.data)
-  //   localStorage.setItem(
-  //     'toDoBoardData',
-  //     JSON.stringify(this.toDoBoard1.columns)
-  //   );
-  // }
 
-  getAgeFromColumnName(columnName: string): number {
-    switch (columnName) {
-      case 'cdk-drop-list-0':
-        return 18;
-      case 'cdk-drop-list-1':
-        return 25;
-      case 'cdk-drop-list-2':
-        return 45;
-      case 'cdk-drop-list-3':
-        return 80;
-      default:
-        return 0; // Default value if the column name doesn't match
-    }
-  }
-  
-  // Modify the drop method to use the new column names and age ranges
-  drop(event: CdkDragDrop<Task[]>) {
-    this.targetColumnName = event.container.id;
+
+  drop(event: CdkDragDrop<Task[]>,columnName:string) {
+    this.targetColumnName = columnName;
     console.log(this.targetColumnName);
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -128,6 +104,24 @@ export class ToDoDetailsComponent implements OnChanges {
       localStorage.setItem('toDoBoardData', JSON.stringify(this.toDoBoard1.columns));
     }
   }
+
+
+  getAgeFromColumnName(columnName: string): number {
+    switch (columnName) {
+      case 'Age 1-18':
+        return 18;
+      case 'Age 19-25':
+        return 25;
+      case 'Age 25-45':
+        return 45;
+      case 'Age 45-80':
+        return 80;
+      default:
+        return 0; // Default value if the column name doesn't match
+    }
+  }
+
+  
 
   autoDeleteTask() {
     this.openSnackBar();
@@ -151,16 +145,30 @@ export class ToDoDetailsComponent implements OnChanges {
     if (!taskList) return;
     this.toDoBoard1.columns = JSON.parse(taskList);
   }
+// Function to sort tasks in a column by task name
 
-  addTask(task: Task) {
-    if (!task) return;
-    task.id = IdUtils.getUUID();
-    this.toDoBoard1.columns[0].task.push(task);
-    localStorage.setItem(
-      'toDoBoardData',
-      JSON.stringify(this.toDoBoard1.columns)
-    );
+
+
+ addTask(task: Task) {
+  if (!task) return;
+
+  task.id = IdUtils.getUUID(); // Assigning a unique ID to the task
+
+  const age = task.age; // Assuming task has an 'age' property
+
+  if (age >= 1 && age <= 18) {
+    this.toDoBoard1.columns[0].task.push(task); // Add task to the first column for Age 1-18
+  } else if (age >= 19 && age <= 25) {
+    this.toDoBoard1.columns[1].task.push(task); // Add task to the second column for Age 19-25
+  } else if (age >= 26 && age <= 45) {
+    this.toDoBoard1.columns[2].task.push(task); // Add task to the third column for Age 26-45
+  } else if (age >= 46 && age <= 80) {
+    this.toDoBoard1.columns[3].task.push(task); // Add task to the fourth column for Age 46-80
   }
+
+  // Update the storage or perform other necessary operations
+  localStorage.setItem('toDoBoardData', JSON.stringify(this.toDoBoard1.columns));
+}
 
   updateTask(updatedTask: Task) {
     if (!updatedTask) return;
@@ -175,6 +183,7 @@ export class ToDoDetailsComponent implements OnChanges {
         }
       });
     });
+    
     localStorage.setItem(
       'toDoBoardData',
       JSON.stringify(this.toDoBoard1.columns)

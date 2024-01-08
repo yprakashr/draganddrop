@@ -1,20 +1,25 @@
 <div class="row" style="--bs-gutter-x:0;">
   <div class="col-md-12">
     <div class="container">
+      <input type="text" class="" placeholder="Search tasks..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
+
       <div class="row" cdkDropListGroup>
 
+
         <div class="col-md-3" *ngFor="let column of toDoBoard1.columns">
+          <!-- Search input -->
 
+          <!-- Sorting button -->
+          <button mat-button (click)="sortTasksByName(column)">Sort by Name</button>
+
+          <!-- Rest of your card content -->
           <mat-card class="todo-card bg-light">
+            <!-- ... card headers and other content ... -->
             <mat-card-header>{{column.name}}</mat-card-header>
-            <!-- <mat-card-header  *ngIf="column.name === 'BACKLOG'">AGE 1-18</mat-card-header>
-            <mat-card-header  *ngIf="column.name === 'TODO'">AGE 19-25</mat-card-header>
-            <mat-card-header  *ngIf="column.name === 'IN PROGRESS'">AGE 26-45</mat-card-header>
-            <mat-card-header  *ngIf="column.name === 'DONE'">AGE 46-85</mat-card-header> -->
 
-            <div cdkDropList [cdkDropListData]="column.task" class="container example-list"
-              (cdkDropListDropped)="drop($event)">
+            <div (cdkDropListDropped)="drop($event,column.name)" cdkDropList [cdkDropListData]="column.task" class="container example-list">
               <div class="example-box" *ngFor="let item of column.task" cdkDrag>
+      
                 <mat-card class="mt-2 mb-2">
                   <mat-card-header [hidden]="true" style="font-weight:500;">{{item.id}}</mat-card-header>
                   <mat-card-header style="font-weight:500;">{{item.name}}</mat-card-header>
