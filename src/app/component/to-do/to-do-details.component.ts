@@ -48,7 +48,7 @@ export class ToDoDetailsComponent implements OnChanges {
     const query = this.searchQuery.toLowerCase().trim();
 
     if (!query) {
-      this.toDoBoard1 = { ...this.originalToDoBoardData };
+      this.getTaskList();
       return;
         }
 
@@ -59,7 +59,7 @@ export class ToDoDetailsComponent implements OnChanges {
           task.age.toString().includes(query) // Convert age to string for search
       );
     });
-  
+    
   }
 
   sortTasksByName(column: Column) {
